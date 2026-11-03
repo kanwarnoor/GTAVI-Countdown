@@ -21,7 +21,7 @@ export default function Home() {
 
   useEffect(() => {
     const targetDate = new Date("2026-11-19T00:00:00");
-    const preloadDate = new Date("2026-11-12T00:00:00");
+    const preloadDate = new Date("2026-11-10T00:00:00");
     const startDate = new Date("2025-11-07T00:00:00");
 
     const interval = setInterval(() => {
