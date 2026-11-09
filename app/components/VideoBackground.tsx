@@ -5,7 +5,7 @@ import React, { useState } from "react";
 export default function VideoBackground() {
   const [loaded, setLoaded] = useState(false);
   return (
-    <div className="fixed inset-0 z-0 bg-black opacity-70">
+    <div className="fixed inset-0 z-0 bg-black opacity-100">
       {/* <div className="bg-black w-screen h-screen opacity-50 mix-blend-color-dodge">
 
       </div> */}
