@@ -20,8 +20,8 @@ export default function Home() {
   const [preloadPercentage, setPreloadPercentage] = useState(0);
 
   useEffect(() => {
-    const targetDate = new Date("2026-11-19T00:00:00");
-    const preloadDate = new Date("2026-11-10T00:00:00");
+    const targetDate = new Date("2026-11-18T00:00:00");
+    // const preloadDate = new Date("2026-11-10T00:00:00");
     const startDate = new Date("2025-11-07T00:00:00");
 
     const interval = setInterval(() => {
@@ -37,11 +37,11 @@ export default function Home() {
       setPercentage(Math.min(percentage1, 100));
 
       // Preload percentage
-      const preloadPct =
-        ((now.getTime() - startDate.getTime()) /
-          (preloadDate.getTime() - startDate.getTime())) *
-        100;
-      setPreloadPercentage(Math.min(preloadPct, 100));
+      // const preloadPct =
+      //   ((now.getTime() - startDate.getTime()) /
+      //     (preloadDate.getTime() - startDate.getTime())) *
+      //   100;
+      // setPreloadPercentage(Math.min(preloadPct, 100));
 
       if (difference <= 0) {
         setTimeLeft({ months: 0, days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -181,7 +181,7 @@ export default function Home() {
                 </p>
               </div>
 
-              {toggle && (
+              {/* {toggle && (
                 <div className="text-center flex flex-col items-center">
                   <p className="md:text-5xl text-3xl font-bold">
                     {preloadPercentage.toFixed(2)}%
@@ -204,11 +204,11 @@ export default function Home() {
                     Preload
                   </p>
                 </div>
-              )}
+              )} */}
             </div>
-            <div className="flex cursor-pointer mt-3 text-[0.7rem] text-center m-auto justify-center items-center opacity-50 hover:opacity-100">
+            {/* <div className="flex cursor-pointer mt-3 text-[0.7rem] text-center m-auto justify-center items-center opacity-50 hover:opacity-100">
               <p onClick={() => setToggle(!toggle)}>Toggle, Preload</p>
-            </div>
+            </div> */}
           </motion.div>
         </div>
       </div>
