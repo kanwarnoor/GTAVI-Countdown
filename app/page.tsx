@@ -24,7 +24,8 @@ export default function Home() {
     // const preloadDate = new Date("2026-11-10T00:00:00");
     const startDate = new Date("2025-11-07T00:00:00");
 
-    const interval = setInterval(() => {
+    // Returns true once the countdown has finished
+    const tick = (): boolean => {
       const now = new Date();
 
       const difference = targetDate.getTime() - now.getTime();
@@ -45,8 +46,7 @@ export default function Home() {
 
       if (difference <= 0) {
         setTimeLeft({ months: 0, days: 0, hours: 0, minutes: 0, seconds: 0 });
-        clearInterval(interval);
-        return;
+        return true;
       }
 
       const totalSeconds = Math.floor(difference / 1000);
@@ -88,10 +88,29 @@ export default function Home() {
       const seconds = totalSeconds % 60;
 
       setTimeLeft({ months, days, hours, minutes, seconds });
+      return false;
+    };
+
+    // Run once immediately so the correct units are shown on first paint
+    if (tick()) return;
+
+    const interval = setInterval(() => {
+      if (tick()) clearInterval(interval);
     }, 1000);
 
     return () => clearInterval(interval);
   }, []);
+
+  // Hide a unit only once it and every larger unit have hit 0 for good
+  // (e.g. MONTHS disappears at 0, but HOURS stays while DAYS > 0).
+  // SECONDS is always kept so the countdown ends showing "0".
+  const allUnits = ["MONTHS", "DAYS", "HOURS", "MINUTES", "SECONDS"] as const;
+  const firstNonZero = allUnits.findIndex(
+    (unit) => timeLeft[unit.toLowerCase() as keyof typeof timeLeft] > 0,
+  );
+  const visibleUnits = allUnits.slice(
+    firstNonZero === -1 ? allUnits.length - 1 : firstNonZero,
+  );
 
   return (
     <>
@@ -105,11 +124,31 @@ export default function Home() {
         <VideoBackground />
 
         <div className="text-center z-10 w-full max-w-7xl">
-          <motion.div className="grid grid-cols-4 gap-2 md:gap-4">
-            {["DAYS", "HOURS", "MINUTES", "SECONDS"].map(
-              (item, index) => (
+          <motion.div
+            className="grid gap-2 md:gap-4"
+            style={{
+              gridTemplateColumns: `repeat(${visibleUnits.length}, minmax(0, 1fr))`,
+            }}
+          >
+            {visibleUnits.map((item, index) => (
+              <motion.div
+                key={item}
+                initial={{
+                  y: 25,
+                  opacity: 0,
+                }}
+                animate={{
+                  y: 0,
+                  opacity: 1,
+                }}
+                transition={{
+                  delay: 1 + index * 0.1,
+                  duration: 0.5,
+                }}
+                className="bg-opacity-50 p-2 md:p-6 rounded-lg"
+              >
                 <motion.div
-                  key={index}
+                  key={timeLeft[item.toLowerCase() as keyof typeof timeLeft]}
                   initial={{
                     y: 25,
                     opacity: 0,
@@ -119,36 +158,19 @@ export default function Home() {
                     opacity: 1,
                   }}
                   transition={{
-                    delay: 1 + index * 0.1,
                     duration: 0.5,
                   }}
-                  className="bg-opacity-50 p-2 md:p-6 rounded-lg"
+                  className="text-4xl sm:text-6xl md:text-7xl lg:text-9xl font-bold"
                 >
-                  <motion.div
-                    key={timeLeft[item.toLowerCase() as keyof typeof timeLeft]}
-                    initial={{
-                      y: 25,
-                      opacity: 0,
-                    }}
-                    animate={{
-                      y: 0,
-                      opacity: 1,
-                    }}
-                    transition={{
-                      duration: 0.5,
-                    }}
-                    className="text-4xl sm:text-6xl md:text-7xl lg:text-9xl font-bold"
-                  >
-                    {timeLeft[item.toLowerCase() as keyof typeof timeLeft]}
-                  </motion.div>
-                  <div className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold opacity-50">
-                    {timeLeft[item.toLowerCase() as keyof typeof timeLeft] === 1
-                      ? item.slice(0, -1) // Remove 's' from the end
-                      : item}
-                  </div>
+                  {timeLeft[item.toLowerCase() as keyof typeof timeLeft]}
                 </motion.div>
-              ),
-            )}
+                <div className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold opacity-50">
+                  {timeLeft[item.toLowerCase() as keyof typeof timeLeft] === 1
+                    ? item.slice(0, -1) // Remove 's' from the end
+                    : item}
+                </div>
+              </motion.div>
+            ))}
           </motion.div>
 
           <motion.div
