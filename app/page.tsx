@@ -95,7 +95,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center text-white relative px-4">
+      <div className="max-h-screen h-screen flex items-center justify-center text-white relative px-4">
         {/* <div className="absolute flex inset-0 z-10 bg-none w-full opacity-85">
           <div className="w-full h-full bg-none" style={{width: `${percentage}%`}}></div>
           <div className="w-full h-full bg-black/10 backdrop-blur-xl" style={{width: `${100 - percentage}%`}}></div>
@@ -105,8 +105,8 @@ export default function Home() {
         <VideoBackground />
 
         <div className="text-center z-10 w-full max-w-7xl">
-          <motion.div className="grid grid-cols-5 md:grid-cols-5 lg:grid-cols-5 gap-2 md:gap-4">
-            {["MONTHS", "DAYS", "HOURS", "MINUTES", "SECONDS"].map(
+          <motion.div className="grid grid-cols-4 gap-2 md:gap-4">
+            {["DAYS", "HOURS", "MINUTES", "SECONDS"].map(
               (item, index) => (
                 <motion.div
                   key={index}
