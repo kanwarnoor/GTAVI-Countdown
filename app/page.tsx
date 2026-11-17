@@ -20,7 +20,7 @@ export default function Home() {
   const [preloadPercentage, setPreloadPercentage] = useState(0);
 
   useEffect(() => {
-    const targetDate = new Date("2026-11-18T00:00:00");
+    const targetDate = new Date("2026-11-19T00:00:00");
     // const preloadDate = new Date("2026-11-10T00:00:00");
     const startDate = new Date("2025-11-07T00:00:00");
 
@@ -51,47 +51,17 @@ export default function Home() {
 
       const totalSeconds = Math.floor(difference / 1000);
 
-      const nowDateOnly = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate(),
-      );
-      const targetDateOnly = new Date(
-        targetDate.getFullYear(),
-        targetDate.getMonth(),
-        targetDate.getDate(),
-      );
-
-      let months =
-        (targetDateOnly.getFullYear() - nowDateOnly.getFullYear()) * 12 +
-        (targetDateOnly.getMonth() - nowDateOnly.getMonth());
-      let monthAdjusted = new Date(
-        nowDateOnly.getFullYear(),
-        nowDateOnly.getMonth() + months,
-        nowDateOnly.getDate(),
-      );
-      if (monthAdjusted > targetDateOnly) {
-        months--;
-        monthAdjusted = new Date(
-          nowDateOnly.getFullYear(),
-          nowDateOnly.getMonth() + months,
-          nowDateOnly.getDate(),
-        );
-      }
-      const days = Math.round(
-        (targetDateOnly.getTime() - monthAdjusted.getTime()) /
-          (1000 * 60 * 60 * 24),
-      );
-
+      // MONTHS isn't displayed, so DAYS is the total number of whole days left
+      const days = Math.floor(totalSeconds / (60 * 60 * 24));
       const hours = Math.floor((totalSeconds % (60 * 60 * 24)) / (60 * 60));
       const minutes = Math.floor((totalSeconds % (60 * 60)) / 60);
       const seconds = totalSeconds % 60;
 
-      setTimeLeft({ months, days, hours, minutes, seconds });
+      setTimeLeft({ months: 0, days, hours, minutes, seconds });
       return false;
     };
 
-    // Run once immediately so the correct units are shown on first paint
+    // Run once immediately so the correct values are shown on first paint
     if (tick()) return;
 
     const interval = setInterval(() => {
@@ -100,17 +70,6 @@ export default function Home() {
 
     return () => clearInterval(interval);
   }, []);
-
-  // Hide a unit only once it and every larger unit have hit 0 for good
-  // (e.g. MONTHS disappears at 0, but HOURS stays while DAYS > 0).
-  // SECONDS is always kept so the countdown ends showing "0".
-  const allUnits = ["MONTHS", "DAYS", "HOURS", "MINUTES", "SECONDS"] as const;
-  const firstNonZero = allUnits.findIndex(
-    (unit) => timeLeft[unit.toLowerCase() as keyof typeof timeLeft] > 0,
-  );
-  const visibleUnits = allUnits.slice(
-    firstNonZero === -1 ? allUnits.length - 1 : firstNonZero,
-  );
 
   return (
     <>
@@ -124,13 +83,8 @@ export default function Home() {
         <VideoBackground />
 
         <div className="text-center z-10 w-full max-w-7xl">
-          <motion.div
-            className="grid gap-2 md:gap-4"
-            style={{
-              gridTemplateColumns: `repeat(${visibleUnits.length}, minmax(0, 1fr))`,
-            }}
-          >
-            {visibleUnits.map((item, index) => (
+          <motion.div className="grid grid-cols-4 gap-2 md:gap-4">
+            {["DAYS", "HOURS", "MINUTES", "SECONDS"].map((item, index) => (
               <motion.div
                 key={item}
                 initial={{
