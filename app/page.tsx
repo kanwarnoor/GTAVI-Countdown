@@ -80,6 +80,9 @@ export default function Home() {
          
         </div> */}
         {/* <BackgroundSlideshow /> */}
+        <div className="absolute w-screen h-screen bg-black/20 z-10">
+
+        </div>
         <VideoBackground />
 
         <div className="text-center z-10 w-full max-w-7xl">
